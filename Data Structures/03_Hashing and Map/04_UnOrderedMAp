@@ -1,0 +1,4 @@
+  It gives unordered Sequence
+ MEMBER FUNCTION OF UNORDERED MAP
+    Insertion , Deletion , Searching (Average Case T.C -> O(1) )
+    (Worst Case T.C -> O(n) )

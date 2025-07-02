@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Gym Slot Booking</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #121212;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            font-size: 24px;
+            color: #ff4757;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border: 2px solid #ff4757;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #e84118;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .role-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .slot-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .slot-card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            width: 200px;
+            transition: 0.3s;
+        }
+
+        .slot-card:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="homePage" class="container">
+        <h2>Welcome to College Gym Booking</h2>
+        <div class="role-selection">
+            <button onclick="showLogin('student')">Student Login / Signup</button>
+            <button onclick="showLogin('staff')">Staff Login / Signup</button>
+            <button onclick="showLogin('admin')">Admin Login</button>
+        </div>
+    </div>
+
+    <div id="auth" class="container hidden">
+        <h2 id="authTitle">Login / Signup</h2>
+        <input type="text" id="username" placeholder="Enter Name">
+        <input type="password" id="password" placeholder="Enter Password">
+        <button onclick="login()">Login / Signup/button>
+    </div>
+
+    <div id="adminPanel" class="container hidden">
+        <h2>Admin Panel</h2>
+        <div>
+            <label for="slotTime">Slot Time:</label>
+            <input type="text" id="slotTime" placeholder="e.g. 6-7 AM">
+            <label for="slotSeats">Seats:</label>
+            <input type="number" id="slotSeats" placeholder="30">
+            <button onclick="addSlot()">Add Slot</button>
+        </div>
+        <h3>Existing Slots</h3>
+        <div id="adminSlots"></div>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <div id="userDashboard" class="container hidden">
+        <h2>Book a Gym Slot</h2>
+        <div class="slot-container" id="slots"></div>
+        <h3>Your Bookings</h3>
+        <div id="userBookings"></div>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        let users = {};
+        let selectedRole = "student";
+        let slots = ["6-7 AM", "7-8 AM", "8-9 AM", "5-6 PM", "6-7 PM", "7-8 PM"].map(time => ({ time, seats: 30, bookedUsers: [] }));
+
+        function showLogin(role) {
+            selectedRole = role;
+            document.getElementById("homePage").classList.add("hidden");
+            document.getElementById("auth").classList.remove("hidden");
+        }
+
+        function login() {
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
+            if (!username || !password) return alert("Enter valid details");
+            users[username] = password;
+            localStorage.setItem("gymUser", username);
+            localStorage.setItem("userRole", selectedRole);
+            togglePages();
+        }
+
+        function logout() {
+            localStorage.removeItem("gymUser");
+            localStorage.removeItem("userRole");
+            togglePages();
+        }
+
+        function bookSlot(index) {
+            const user = localStorage.getItem("gymUser");
+            if (slots[index].bookedUsers.includes(user)) return alert("You already booked this slot");
+            if (slots[index].seats > 0) {
+                slots[index].seats--;
+                slots[index].bookedUsers.push(user);
+                renderSlots();
+                renderUserBookings();
+            }
+        }
+
+        function addSlot() {
+            const time = document.getElementById("slotTime").value;
+            const seats = parseInt(document.getElementById("slotSeats").value);
+            if (time && seats > 0) {
+                slots.push({ time, seats, bookedUsers: [] });
+                renderAdminSlots();
+                renderSlots();
+            }
+        }
+
+        function renderSlots() {
+            const slotsContainer = document.getElementById("slots");
+            slotsContainer.innerHTML = "";
+            slots.forEach((slot, index) => {
+                const div = document.createElement("div");
+                div.className = "slot-card";
+                div.innerHTML = `<p>${slot.time}</p><p>Seats Left: ${slot.seats}</p><button onclick="bookSlot(${index})">Book</button>`;
+                slotsContainer.appendChild(div);
+            });
+        }
+
+        function renderUserBookings() {
+            const user = localStorage.getItem("gymUser");
+            document.getElementById("userBookings").innerHTML = slots.filter(s => s.bookedUsers.includes(user)).map(s => `<p>${s.time}</p>`).join("") || "<p>No bookings yet</p>";
+        }
+
+        function renderAdminSlots() {
+            const adminSlotsContainer = document.getElementById("adminSlots");
+            adminSlotsContainer.innerHTML = slots.map(slot => `<p>${slot.time} - ${slot.seats} Seats</p>`).join("");
+        }
+
+        function togglePages() {
+            const user = localStorage.getItem("gymUser");
+            const role = localStorage.getItem("userRole");
+            document.getElementById("homePage").classList.toggle("hidden", user);
+            document.getElementById("auth").classList.toggle("hidden", user);
+            document.getElementById("userDashboard").classList.toggle("hidden", user && role !== "admin");
+            document.getElementById("adminPanel").classList.toggle("hidden", role !== "admin");
+            if (user) { renderSlots(); renderUserBookings(); renderAdminSlots(); }
+        }
+
+        window.onload = togglePages;
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,42 @@
+# Ignore VSCode settings
+.vscode/
+
+# Ignore Windows/Mac/Linux system files
+.DS_Store
+Thumbs.db
+
+# Ignore C++ build files
+*.exe
+*.out
+*.obj
+*.o
+*.gch
+*.log
+
+# Ignore temporary or backup files
+*.tmp
+*.bak
+*~
+
+# Ignore MinGW compiler-related folder
+MinGW/
+
+# Ignore compiled binaries in all folders
+**/a.out
+**/a.exe
+
+# Allow DSA folders (these are not ignored)
+!01_Basic Maths/
+!02_Recursion/
+!04_Basic Map/
+!05_Sorting/
+!06_Arrays/
+!07_Binary/
+!08_Strings/
+!09_LinkedList/
+!IO_Recursion/
+!Arrays/
+!Data Structures/
+!Functions/
+!Patterns/
+!Vector STL/
