@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coding Questions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    form {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    li {
+      background: white;
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>Coding Questions</h1>
+  <form id="questionForm">
+    <input type="text" id="questionInput" placeholder="Enter coding question..." required />
+    <button type="submit">Add</button>
+  </form>
+  <ul id="questionList"></ul>
+
+  <script>
+    const form = document.getElementById('questionForm');
+    const input = document.getElementById('questionInput');
+    const list = document.getElementById('questionList');
+
+    const questions = JSON.parse(localStorage.getItem('codingQuestions')) || [];
+
+    function saveQuestions() {
+      localStorage.setItem('codingQuestions', JSON.stringify(questions));
+    }
+
+    function renderQuestions() {
+      list.innerHTML = '';
+      questions.forEach((q, index) => {
+        const li = document.createElement('li');
+        li.textContent = q;
+        list.appendChild(li);
+      });
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newQuestion = input.value.trim();
+      if (newQuestion) {
+        questions.push(newQuestion);
+        saveQuestions();
+        renderQuestions();
+        input.value = '';
+      }
+    });
+
+    renderQuestions();
+  </script>
+</body>
+</html>
