@@ -1,0 +1,1 @@
+// Prime in Digonal LC 2614
