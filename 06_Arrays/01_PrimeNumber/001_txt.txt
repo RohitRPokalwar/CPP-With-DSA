@@ -1,1 +1,6 @@
 // Prime in Digonal LC 2614
+// Perfect Number LC 507
+// Smallest Value After Replacing with Sum of Prime Factors LC 2507
+// Count Primes LC 204
+//LC 2521 (Revise)
+//Ugly Number LC 263

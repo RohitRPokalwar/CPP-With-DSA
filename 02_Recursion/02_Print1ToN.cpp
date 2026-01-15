@@ -7,8 +7,8 @@ void Print(int i, int n)
 {
     if (i > n)
         return;
-    cout << i << " ";
     Print(i + 1, n);
+    cout << i << " ";
 }
 int main()
 {
